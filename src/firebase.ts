@@ -1,6 +1,6 @@
 import { getFirestore, doc, collection, addDoc, setDoc  } from "firebase/firestore";
 import { initializeApp } from "firebase/app";
-import { sortAndDeduplicateDiagnostics } from "typescript";
+//import { sortAndDeduplicateDiagnostics } from "typescript";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCMjUI-zw-6rad7ZXxUxu8vYWpzgs2sbkI",
