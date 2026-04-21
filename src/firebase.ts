@@ -1,5 +1,6 @@
 import { getFirestore, doc, collection, addDoc, setDoc  } from "firebase/firestore";
 import { initializeApp } from "firebase/app";
+import {getAuth} from "firebase/auth"
 //import { sortAndDeduplicateDiagnostics } from "typescript";
 
 const firebaseConfig = {
@@ -18,6 +19,7 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 export default db;
+export const auth = getAuth(app);
 
 const baseArr = [
   { "id": "b1", "name": "Black Tea", "color": "#8B4513" },
@@ -53,7 +55,7 @@ const syrupArr = [
 //   })
 
 //   syrupArr.forEach(async (sy: any) => {
-//     const syrupDoc = doc(db, "creamers", sy.id);
+//     const syrupDoc = doc(db, "Syrup", sy.id);
 //     await setDoc(syrupDoc, {name: sy.name, color: sy.color});
 //   })
 // } 

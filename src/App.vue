@@ -65,16 +65,75 @@
         </template>
       </li>
     </ul>
-    <input type="text" placeholder="Beverage Name" />
-    <button>🍺 Make Beverage</button>
+    <input type="text" placeholder="Beverage Name" v-model="beverageStore.currentName" />
+    <button :disabled="!beverageStore.user" @click="makeBeverage()">🍺 Make Beverage</button>
+    <p v-if="message">{{ message }}</p>
+
+    <ul>
+      <button v-if="beverageStore.user == null" @click="withGoogle()">Sign in with Google</button>
+      <li v-else>
+        Signed in as {{ beverageStore.user.displayName || beverageStore.user.email }}
+        <button @click="signOut()">Sign out</button>
+      </li>
+    </ul>
+
+    <ul v-if="beverageStore.user != null && beverageStore.beverages.length > 0">
+      <li>
+        <label>Your Saved Beverages:</label>
+        <select v-model="beverageStore.currentBeverage" @change="beverageStore.showBeverage()">
+          <option v-for="b in beverageStore.beverages" :key="b.id" :value="b">
+            {{ b.name }}
+          </option>
+        </select>
+      </li>
+    </ul>
   </div>
-  <div id="beverage-container" style="margin-top: 20px"></div>
 </template>
 
 <script setup lang="ts">
+import { ref, onMounted } from "vue";
+import {
+  GoogleAuthProvider,
+  signInWithPopup,
+  getAuth,
+  signOut as firebaseSignOut,
+  onAuthStateChanged,
+} from "firebase/auth";
+import { auth } from "./firebase";
 import Beverage from "./components/Beverage.vue";
 import { useBeverageStore } from "./stores/beverageStore";
+
 const beverageStore = useBeverageStore();
+const message = ref("");
+
+onMounted(async () => {
+  await beverageStore.init();
+
+  onAuthStateChanged(auth, (user) => {
+    beverageStore.setUser(user);
+  });
+});
+
+async function withGoogle() {
+  const provider = new GoogleAuthProvider();
+  try {
+    await signInWithPopup(getAuth(), provider);
+  } catch (error: any) {
+    message.value = "Error signing in: " + error.message;
+  }
+}
+
+async function signOut() {
+  try {
+    await firebaseSignOut(auth);
+  } catch (error: any) {
+    message.value = "Error signing out: " + error.message;
+  }
+}
+
+function makeBeverage() {
+  message.value = beverageStore.makeBeverage();
+}
 </script>
 
 <style lang="scss">

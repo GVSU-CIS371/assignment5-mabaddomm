@@ -18,10 +18,12 @@ interface SyrupType {
 
 type BeverageType = {
   id: string;
+  userId: string;
   name: string;
   temp: string;
   base: BaseBeverageType;
   syrup: SyrupType;
   creamer: CreamerType;
 };
+ 
 export type { BaseBeverageType, CreamerType, SyrupType, BeverageType };
